@@ -1,0 +1,263 @@
+<div class="page-wrapper" dir="rtl">
+
+@if (succes && dernierResultat) {
+  <div class="alert-success">
+    ✅ تم تسجيل طلب النقل بنجاح — رقم الطلب :
+    <strong>{{ dernierResultat.id }}</strong>
+    @if (dernierResultat.ordreMissionEmis) {
+      &nbsp;| رقم أمر المهمة : <strong>{{ dernierResultat.ordreMissionNumero }}</strong>
+    }
+  @if (erreur) {
+    <div class="alert-error">⚠️ {{ erreur }}</div>
+  }
+   <div class="alert-actions">
+      @if (!dernierResultat.ordreMissionEmis) {
+        <button class="btn-ordre" (click)="ouvrirModalOrdre()">
+          📋 إصدار أمر المهمة
+        </button>
+      }
+      <button class="btn-new" (click)="resetFormulaire()">➕ طلب جديد</button>
+    </div>
+  </div>
+}
+  @if (afficherModalOrdre) {
+    <div class="modal-overlay" (click)="fermerModalOrdre()">
+      <div class="modal-card" dir="rtl" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+          <h3>إذن بمأمورية لاستعمال عربة المصلحة</h3>
+          <button class="btn-close-x" (click)="fermerModalOrdre()">✕</button>
+        </div>
+
+        <div class="modal-body">
+          @if (ordreErreur) {
+            <div class="alert-error small">⚠️ {{ ordreErreur }}</div>
+          }
+
+          <div class="form-row">
+            <div class="form-group flex2">
+              <label>يرخص للسيد(ة) <span class="required">*</span></label>
+              <input type="text" placeholder="اسم ولقب المسؤول" [(ngModel)]="ordreForm.nomResponsable">
+            </div>
+            <div class="form-group">
+              <label>ب.ت.و</label>
+              <input type="text" placeholder="رقم بطاقة الهوية" [(ngModel)]="ordreForm.cinResponsable">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>الرتبة أو الصنف</label>
+              <input type="text" [(ngModel)]="ordreForm.grade" placeholder="الرتبة">
+            </div>
+            <div class="form-group">
+              <label>الخطة الوظيفية</label>
+              <input type="text" [(ngModel)]="ordreForm.fonction" placeholder="الخطة">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>رقم عربة المصلحة <span class="required">*</span></label>
+              <input type="text" placeholder="مثال: 123 تونس 456" [(ngModel)]="ordreForm.vehicule">
+            </div>
+            <div class="form-group flex2">
+              <label>الغاية من استعمال العربة</label>
+              <input type="text" placeholder="نقل جثة..." [(ngModel)]="ordreForm.but">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex2">
+              <label>مكان الانطلاق</label>
+              <input type="text" [(ngModel)]="ordreForm.lieuDepart">
+            </div>
+            <div class="form-group">
+              <label>تاريخ الانطلاق</label>
+              <input type="date" [(ngModel)]="ordreForm.dateDepart">
+            </div>
+            <div class="form-group">
+              <label>الساعة</label>
+              <input type="time" [(ngModel)]="ordreForm.heureDepart">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex2">
+              <label>المكان المقصود</label>
+              <input type="text" [(ngModel)]="ordreForm.lieuArrivee">
+            </div>
+            <div class="form-group">
+              <label>تاريخ الرجوع</label>
+              <input type="date" [(ngModel)]="ordreForm.dateRetour">
+            </div>
+            <div class="form-group">
+              <label>الساعة</label>
+              <input type="time" [(ngModel)]="ordreForm.heureRetour">
+            </div>
+          </div>
+
+          <div class="section-title-modal">المرافقون</div>
+          @for (m of membres; track $index; let i = $index) {
+            <div class="form-row membre-row">
+              <div class="form-group flex2">
+                <input type="text" placeholder="الاسم واللقب" [(ngModel)]="membres[i].nom">
+              </div>
+              <div class="form-group">
+                <input type="text" placeholder="رقم البطاقة" [(ngModel)]="membres[i].cin">
+              </div>
+              @if (membres.length > 1) {
+                <button class="btn-remove" (click)="supprimerMembre(i)">✕</button>
+              }
+            </div>
+          }
+          <button class="btn-add-membre" (click)="ajouterMembre()">➕ إضافة مرافق</button>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-submit-modal" (click)="emettreOrdre()" [disabled]="ordreChargement">
+            @if (ordreChargement) { <span class="spinner"></span> }
+             تأكيد وإصدار الأمر
+          </button>
+          <button class="btn-cancel" (click)="fermerModalOrdre()">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="form-card">
+    <div class="form-header">
+      <div class="header-text">
+        <h2>نموذج طلب نقل جثة</h2>
+        <p>Formulaire de demande de transfert de cadavre</p>
+      </div>
+      <img src="logo_commune.png" class="header-logo" alt="بلدية صفاقس">
+    </div>
+
+    <div class="form-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>التاريخ</label>
+          <input type="date" [(ngModel)]="date">
+        </div>
+        <div class="form-group">
+          <label>قوات الأمن <span class="required">*</span></label>
+          <select [(ngModel)]="forceSecuriteId">
+            <option [ngValue]="undefined">-- اختر --</option>
+            @for (f of forces; track f.id) {
+              <option [ngValue]="f.id">{{ f.nomUnite }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>المنطقة <span class="required">*</span></label>
+          <select [(ngModel)]="zoneId">
+            <option [ngValue]="undefined">-- اختر --</option>
+            @for (z of zones; track z.id) {
+              <option [ngValue]="z.id">{{ z.nom }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex2">
+          <label>مكان الاسترداد <span class="required">*</span></label>
+          <input type="text" placeholder="أدخل المكان" [(ngModel)]="lieuRecuperation">
+        </div>
+        <div class="form-group">
+          <label>عدد الجثامين</label>
+          <input type="number" min="1" max="20" [(ngModel)]="nombreCadavres" (change)="onNombreChange()">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>رقم مكتب الإرشادات</label>
+          <input type="text" placeholder="اختياري" [(ngModel)]="numeroBureauOrdre">
+        </div>
+        <div class="form-group">
+          <label>تاريخ مكتب الإرشادات</label>
+          <input type="date" [(ngModel)]="dateBureauOrdre">
+        </div>
+        <div class="form-group">
+          <label>رقم الأرشيف</label>
+          <input type="text" placeholder="اختياري" [(ngModel)]="numeroArchive">
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th class="col-num">الجثة</th>
+              <th class="col-type">النوع</th>
+              <th>الاسم واللقب</th>
+              <th class="col-cause">سبب الوفاة</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (cadavre of cadavres; track $index; let i = $index) {
+              <tr>
+                <td class="num-cell">{{ i + 1 }}</td>
+                <td>
+                  <div class="radio-group">
+                    <label class="radio-label">
+                      <input type="radio" [name]="'type' + i" [checked]="cadavre.type === 'CONNU'" (change)="setType(i, 'CONNU')">
+                      <span>معلوم</span>
+                    </label>
+                    <label class="radio-label">
+                      <input type="radio" [name]="'type' + i" [checked]="cadavre.type === 'INCONNU'" (change)="setType(i, 'INCONNU')">
+                      <span>مجهول</span>
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  @if (cadavre.type === 'CONNU') {
+                    <div class="name-inputs">
+                      <input type="text" placeholder="الاسم" [(ngModel)]="cadavre.nom">
+                      <input type="text" placeholder="اللقب" [(ngModel)]="cadavre.prenom">
+                    </div>
+                  } @else {
+                    <span class="inconnu-label">— مجهول الهوية —</span>
+                  }
+                </td>
+                <td>
+                  <select [(ngModel)]="cadavre.causeDecesId">
+                    <option [ngValue]="undefined">-- اختر --</option>
+                    <option [value]="1">حادث مرور</option>
+                    <option [value]="2">غرق</option>
+                    <option [value]="3">سبب مجهول</option>
+                    <option [value]="4">وفاة طبيعية</option>
+                    <option [value]="5">مرض</option>
+                  </select>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-main btn-save" (click)="enregistrer()" [disabled]="chargement || succes">
+          💾 تسجيل (Enregistrer)
+        </button>
+
+        <button class="btn-main btn-print" (click)="imprimerDemande()" [disabled]="!dernierResultat">
+          🖨️ طباعة النموذج
+        </button>
+
+        <button class="btn-main btn-mission" (click)="ouvrirModalOrdre()" [disabled]="!dernierResultat">
+          📋 أمر مهمة
+        </button>
+
+        @if (succes) {
+          <button class="btn-main btn-new" (click)="resetFormulaire()">
+            ➕ طلب جديد
+          </button>
+        }
+      </div>
+
+    </div>
+  </div>
+</div>

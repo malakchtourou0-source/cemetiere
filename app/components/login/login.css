@@ -1,0 +1,91 @@
+/* login.css — formulaire à gauche, brand à droite */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.login-wrapper {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* ── Côté gauche — FORMULAIRE ── */
+.login-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f7fb;
+  padding: 40px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 380px;
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.08);
+}
+
+.login-title { font-size: 26px; font-weight: 700; color: #0d2b52; margin-bottom: 4px; }
+.login-sub   { color: #888; font-size: 13px; margin-bottom: 28px; }
+
+.alert-error {
+  background: #fef0f0;
+  border: 1px solid #f5c6c6;
+  color: #c0392b;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.field             { margin-bottom: 18px; }
+.field label       { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+.field input {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid #dde3ec; border-radius: 8px;
+  font-size: 14px; outline: none; transition: border-color 0.2s;
+}
+.field input:focus { border-color: #1a5276; }
+
+.btn-login {
+  width: 100%; padding: 13px;
+  background: #1a5276; color: white;
+  border: none; border-radius: 8px;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer; margin-top: 8px;
+  transition: background 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-login:hover:not(:disabled) { background: #2e86c1; }
+.btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* ── Côté droit — BRAND ── */
+.login-right {
+  flex: 1;
+  background: linear-gradient(145deg, #0d2b52 0%, #1a5276 60%, #2471a3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.brand           { text-align: center; color: white; }
+.brand-logo-img  { width: 120px; height: 120px; object-fit: contain; margin-bottom: 16px; }
+.brand h1        { font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+.brand p         { font-size: 14px; opacity: 0.75; text-transform: uppercase; letter-spacing: 2px; }
+.divider         { width: 50px; height: 2px; background: rgba(255,255,255,0.4); margin: 20px auto; }
+.subtitle        { font-size: 13px; opacity: 0.65; line-height: 1.8; }
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite; display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 700px) {
+  .login-right { display: none; }
+  .login-left  { background: white; }
+}

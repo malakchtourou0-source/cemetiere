@@ -1,0 +1,40 @@
+<aside class="sidebar" dir="rtl">
+
+  <div class="sidebar-brand">
+    <img src="logo_commune.png" class="brand-logo" alt="">
+    <div class="brand-text">
+      <span class="brand-name">بلدية صفاقس</span>
+      <span class="brand-sub">خدمة الحالة المدنية</span>
+    </div>
+  </div>
+
+  <div class="agent-card">
+    <div class="agent-avatar">{{ agentNom.charAt(0) }}</div>
+    <div class="agent-info">
+      <span class="agent-nom">{{ agentNom }}</span>
+      <span class="agent-fonction">{{ fonction }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (group of menu; track group.groupLabel) {
+      <div class="nav-group-label">{{ group.groupLabel }}</div>
+      @for (item of group.items; track item.route) {
+        <button
+          class="nav-item"
+          [class.active]="isActive(item.route)"
+          (click)="naviguer(item.route)">
+          <span class="nav-label">{{ item.label }}</span>
+        </button>
+      }
+    }
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="btn-deconnexion" (click)="seDeconnecter()">
+      <span class="nav-icon">🚪</span>
+      <span>خروج</span>
+    </button>
+  </div>
+
+</aside>

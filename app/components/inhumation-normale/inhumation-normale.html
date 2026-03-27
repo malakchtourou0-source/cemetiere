@@ -1,0 +1,329 @@
+<!-- inhumation-normale.html -->
+<div class="page-wrapper" dir="rtl">
+
+  @if (succes && dernierResultat) {
+    <div class="alert-success">
+       تم تسجيل الدفن بنجاح —
+      رخصة الدفن رقم : <strong>{{ dernierResultat.numPermis }}</strong>
+      @if (dernierResultat.numeroQuittance) {
+        — وصل الدفع : <strong>{{ dernierResultat.numeroQuittance }}</strong>
+      }
+      <div class="alert-actions">
+        <button class="btn-ordre" (click)="imprimer()">🖨️ طباعة الرخصة</button>
+        <button class="btn-new"   (click)="reset()"> تسجيل جديد</button>
+      </div>
+    </div>
+  }
+
+  @if (erreur) { <div class="alert-error">⚠️ {{ erreur }}</div> }
+
+  <div class="form-card">
+    <div class="form-header">
+      <div>
+        <h2>نموذج طلب الدفن العادي</h2>
+        <p>Inhumation normale</p>
+      </div>
+      <img src="logo_commune.png" class="header-logo" alt="">
+    </div>
+
+    <div class="form-body">
+
+      <!-- ══ Section 1 ══ -->
+      <div class="section-title">👤 بيانات المتوفي</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>نوع الجثة</label>
+          <div class="radio-group-h">
+            <label class="radio-label">
+              <input type="radio" name="type"
+                     [checked]="typeCadavre === 'CONNU'"
+                     (change)="setType('CONNU')">
+              <span>معلوم الهوية</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="type"
+                     [checked]="typeCadavre === 'INCONNU'"
+                     (change)="setType('INCONNU')">
+              <span>مجهول الهوية</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      @if (typeCadavre === 'CONNU') {
+        <div class="form-row">
+          <div class="form-group">
+            <label>اللقب <span class="required">*</span></label>
+            <input type="text" placeholder="لقب المتوفي"
+                   [(ngModel)]="nom" (input)="onNomChange()">
+          </div>
+          <div class="form-group">
+            <label>الاسم <span class="required">*</span></label>
+            <input type="text" placeholder="اسم المتوفي"
+                   [(ngModel)]="prenom" (input)="onNomChange()">
+          </div>
+          <div class="form-group">
+            <label>السن</label>
+            <input type="number" min="0" [(ngModel)]="age">
+          </div>
+          <div class="form-group">
+            <label>رقم بطاقة الهوية</label>
+            <input type="text" [(ngModel)]="cin">
+          </div>
+        </div>
+      }
+
+      @if (typeCadavre === 'INCONNU') {
+        <div class="form-row">
+          <div class="form-group">
+            <label>رقم الإيواء <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="numeroHebergement">
+          </div>
+          <div class="form-group">
+            <label>الرقم الطبي القانوني</label>
+            <input type="text" [(ngModel)]="numeroMedicoLegal">
+          </div>
+          <div class="form-group">
+            <label>تاريخ الخروج من المصلحة الطبية</label>
+            <input type="date" [(ngModel)]="dateSortieServiceMedical">
+          </div>
+        </div>
+      }
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>تاريخ الوفاة</label>
+          <input type="date" [(ngModel)]="dateDeces">
+        </div>
+        <div class="form-group">
+          <label>ساعة الوفاة</label>
+          <input type="time" [(ngModel)]="heureDeces">
+        </div>
+        <div class="form-group">
+          <label>مكان الوفاة</label>
+          <input type="text" [(ngModel)]="placeDeces">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>الجنسية</label>
+          <select [(ngModel)]="nationalite">
+            <option value="TUNISIEN">تونسي</option>
+            <option value="SUD_SAHARIEN">جنوب الصحراء</option>
+            <option value="ETRANGER">أجنبي</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>سبب الوفاة</label>
+          <select [(ngModel)]="causeDecesId">
+            <option [value]="undefined">-- اختر --</option>
+            @for (c of causes; track c.id) {
+              <option [value]="c.id">{{ c.libelle }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- ══ Section 2 ══ -->
+      <div class="section-title"> اختيار القبر</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>المقبرة <span class="required">*</span></label>
+          <select [(ngModel)]="cimetiereId" (change)="onCimetiereChange()">
+            <option [value]="undefined">-- اختر المقبرة --</option>
+            @for (c of cimetieres; track c.id) {
+              <option [value]="c.id">{{ c.nom }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>القبر المتاح <span class="required">*</span></label>
+          <select [(ngModel)]="tombeId"
+                  [disabled]="!cimetiereId || tombes.length === 0">
+            <option [value]="undefined">-- اختر القبر --</option>
+            @for (t of tombes; track t.id) {
+              <option [value]="t.id">
+                قبر رقم {{ t.numero }} — {{ getTailleLabel(t.taille) }}
+              </option>
+            }
+          </select>
+          @if (cimetiereId && tombes.length === 0) {
+            <small class="text-warning"> لا توجد قبور متاحة</small>
+          }
+        </div>
+      </div>
+
+      <!-- ══ Section 3 ══ -->
+      <div class="section-title"> رخصة الدفن</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>تاريخ التسليم <span class="required">*</span></label>
+          <input type="date" [(ngModel)]="dateDelivrance">
+        </div>
+        <div class="form-group">
+          <label>اسم المتوفي في الرخصة</label>
+          <input type="text" [(ngModel)]="nomDefunt" placeholder="يُملأ تلقائياً">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>اسم الأب</label>
+          <input type="text" [(ngModel)]="nomPere">
+        </div>
+        <div class="form-group">
+          <label>اسم الأم</label>
+          <input type="text" [(ngModel)]="nomMere">
+        </div>
+      </div>
+
+      <!-- ══ Section 4 ══ -->
+      <div class="section-title"> وصل الدفع</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>نوع المعلوم</label>
+          <select [(ngModel)]="motif">
+            @for (m of motifOptions; track m.value) {
+              <option [value]="m.value">{{ m.label }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>رقم الوصل</label>
+          <input type="text" placeholder="اختياري" [(ngModel)]="numeroQuittance">
+        </div>
+        <div class="form-group">
+          <label>الدافع</label>
+          <input type="text" placeholder="اسم الشخص الذي دفع"
+                 [(ngModel)]="personnePayeur">
+        </div>
+      </div>
+
+      <!-- ══ Boutons ══ -->
+      <div class="form-actions">
+        <button class="btn-submit" (click)="enregistrer()"
+                [disabled]="chargement || succes">
+          @if (chargement) {
+            <span class="spinner"></span> جارٍ التسجيل...
+          } @else {
+             تسجيل الدفن
+          }
+        </button>
+        <button class="btn-print" (click)="imprimer()" [disabled]="!succes">
+           طباعة الرخصة
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ Section impression ══ -->
+  <div class="print-only" dir="rtl">
+    <div class="print-header">
+      <img src="logo_commune.png" class="print-logo" alt="">
+      <div class="print-title">
+        <h2>بلدية صفاقس — خدمة الحالة المدنية</h2>
+        <h3>رخصة دفن رقم : {{ dernierResultat?.numPermis }}</h3>
+        <p>{{ dateDelivrance }}</p>
+      </div>
+      <img src="logo_commune.png" class="print-logo" alt="">
+    </div>
+
+    <div class="print-section">
+      <h4 class="print-section-title">بيانات المتوفي</h4>
+      <div class="print-row">
+        <div class="print-field">
+          <span class="print-label">الاسم واللقب :</span>
+          <span class="print-value">{{ dernierResultat?.nomComplet }}</span>
+        </div>
+        <div class="print-field">
+          <span class="print-label">تاريخ الوفاة :</span>
+          <span class="print-value">{{ dateDeces || '—' }}</span>
+        </div>
+        <div class="print-field">
+          <span class="print-label">ساعة الوفاة :</span>
+          <span class="print-value">{{ heureDeces || '—' }}</span>
+        </div>
+      </div>
+      <div class="print-row">
+        <div class="print-field">
+          <span class="print-label">مكان الوفاة :</span>
+          <span class="print-value">{{ placeDeces || '—' }}</span>
+        </div>
+        <div class="print-field">
+          <span class="print-label">سبب الوفاة :</span>
+          <span class="print-value">{{ dernierResultat?.causeDecesLibelle || '—' }}</span>
+        </div>
+      </div>
+      <div class="print-row">
+        <div class="print-field">
+          <span class="print-label">اسم الأب :</span>
+          <span class="print-value">{{ nomPere || '—' }}</span>
+        </div>
+        <div class="print-field">
+          <span class="print-label">اسم الأم :</span>
+          <span class="print-value">{{ nomMere || '—' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="print-section">
+      <h4 class="print-section-title">معلومات القبر</h4>
+      <div class="print-row">
+        <div class="print-field">
+          <span class="print-label">المقبرة :</span>
+          <span class="print-value">{{ dernierResultat?.cimetiereNom }}</span>
+        </div>
+        <div class="print-field">
+          <span class="print-label">رقم القبر :</span>
+          <span class="print-value">{{ dernierResultat?.tombeNumero }}</span>
+        </div>
+        <div class="print-field">
+          <span class="print-label">الحجم :</span>
+          <span class="print-value">
+            {{ dernierResultat?.tombeTaille === 'GRAND' ? 'كبير' : 'صغير' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    @if (dernierResultat?.numeroQuittance) {
+      <div class="print-section">
+        <h4 class="print-section-title">وصل الدفع</h4>
+        <div class="print-row">
+          <div class="print-field">
+            <span class="print-label">نوع المعلوم :</span>
+            <span class="print-value">
+              {{ motifOptions.find(m => m.value === motif)?.label || motif }}
+            </span>
+          </div>
+          <div class="print-field">
+            <span class="print-label">رقم الوصل :</span>
+            <span class="print-value">{{ dernierResultat?.numeroQuittance }}</span>
+          </div>
+          <div class="print-field">
+            <span class="print-label">دفع بواسطة :</span>
+            <span class="print-value">{{ personnePayeur || '—' }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="print-footer">
+      <div class="print-sign">
+        <p>إمضاء العون</p>
+        <div class="sign-line"></div>
+      </div>
+      <div class="print-sign">
+        <p>ختم البلدية</p>
+        <div class="sign-line"></div>
+      </div>
+    </div>
+  </div>
+
+</div>

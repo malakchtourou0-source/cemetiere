@@ -1,0 +1,393 @@
+/* ══════════════════════════════════════════════════════
+   demande-transfert.css
+   Ajouts : styles modal ordre de mission, btn-ordre,
+   btn-new, alert-actions, required, small alert
+   ══════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; }
+
+/* ── Navbar ──────────────────────────────────────────── */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0d2b52;
+  color: white;
+  padding: 12px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.navbar-brand { font-size: 16px; font-weight: 700; }
+.navbar-right { display: flex; align-items: center; gap: 16px; }
+.agent-name { font-size: 13px; opacity: 0.85; }
+.btn-logout {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-logout:hover { background: rgba(255,255,255,0.1); }
+
+/* ── Page ─────────────────────────────────────────────── */
+.page-wrapper {
+  min-height: calc(100vh - 50px);
+  background: #eef2f7;
+  padding: 24px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* ── Alertes ─────────────────────────────────────────── */
+.alert-success {
+  background: #eafaf1;
+  border: 1px solid #a9dfbf;
+  color: #1e8449;
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+.alert-error {
+  background: #fef0f0;
+  border: 1px solid #f5c6c6;
+  color: #c0392b;
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+.alert-error.small { padding: 8px 12px; font-size: 13px; margin-bottom: 12px; }
+
+/* Boutons dans l'alerte succès */
+.alert-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-ordre {
+  background: #1a5276;
+  color: white;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-ordre:hover { background: #2e86c1; }
+
+.btn-new {
+  background: white;
+  color: #1a5276;
+  border: 2px solid #1a5276;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-new:hover { background: #eef5fb; }
+
+/* ── Carte formulaire ────────────────────────────────── */
+.form-card {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+  overflow: hidden;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.form-header {
+  background: linear-gradient(135deg, #0d2b52, #1a5276);
+  color: white;
+  padding: 20px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.form-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.form-header p  { font-size: 12px; opacity: 0.7; }
+
+.header-logo { width: 70px; height: 70px; object-fit: contain; }
+
+.form-body { padding: 28px; }
+
+/* ── Lignes et groupes ──────────────────────────────── */
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.form-group         { flex: 1; min-width: 160px; }
+.form-group.flex2   { flex: 2; }
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+.required { color: #e74c3c; margin-right: 2px; }
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid #d5dce8;
+  border-radius: 7px;
+  font-size: 14px;
+  color: #222;
+  outline: none;
+  transition: border-color 0.2s;
+  background: white;
+}
+.form-group input:focus,
+.form-group select:focus { border-color: #1a5276; }
+
+/* ── Tableau ─────────────────────────────────────────── */
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  border: 1px solid #dde3ec;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+thead tr { background: #d6e4f0; }
+thead th {
+  padding: 12px 14px;
+  font-weight: 600;
+  color: #0d2b52;
+  text-align: center;
+  border-bottom: 2px solid #aac4dc;
+}
+tbody tr:nth-child(even) { background: #f8fafc; }
+tbody tr:hover           { background: #eef5fb; }
+tbody td {
+  padding: 10px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #e8edf3;
+  text-align: center;
+}
+
+.col-num   { width: 70px;  }
+.col-type  { width: 140px; }
+.col-cause { width: 220px; }
+.num-cell  { font-weight: 700; color: #1a5276; font-size: 16px; }
+
+.radio-group { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding-right: 8px; }
+.radio-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; }
+.radio-label input[type="radio"] { accent-color: #1a5276; width: 15px; height: 15px; }
+
+.name-inputs { display: flex; gap: 8px; }
+.name-inputs input {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1.5px solid #d5dce8;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+.name-inputs input:focus { border-color: #1a5276; }
+
+.inconnu-label { color: #999; font-style: italic; font-size: 13px; }
+
+td select {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1.5px solid #d5dce8;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+td select:focus { border-color: #1a5276; }
+
+/* ── Boutons actions ─────────────────────────────────── */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Espace entre les boutons comme sur la photo */
+    padding: 20px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Bouton Enregistrer (Bleu foncé) */
+.btn-submit {
+    background: #1e3a5f; /* Couleur bleu marine de la photo */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Boutons Imprimer et Émettre (Bords gris clair) */
+.btn-print, .btn-ordre {
+    background: white;
+    color: #334155;
+    border: 1px solid #cbd5e1; /* Bordure fine grise */
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-print:hover, .btn-ordre:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+/* État désactivé */
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+/* ── Spinner ─────────────────────────────────────────── */
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Modal ordre de mission ──────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: flex-start; /* Start from the top to allow scrolling down */
+    justify-content: center;
+    z-index: 1000;
+    padding: 40px 20px;     /* Space at top/bottom so it doesn't touch edges */
+    overflow-y: auto;        /* THIS IS THE KEY: The overlay itself scrolls */
+}
+
+.modal-card {
+    background: white;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 620px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+    /* Remove 'overflow: hidden' to prevent cutting off shadows/content */
+    position: relative;
+    margin-bottom: 40px;    /* Extra space at the bottom */
+}
+.modal-header {
+  background: linear-gradient(135deg, #0d2b52, #1a5276);
+  color: white;
+  padding: 16px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-header h3 { font-size: 17px; font-weight: 700; }
+.btn-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.btn-close:hover { opacity: 1; }
+
+.modal-body   { padding: 22px; }
+.modal-footer {
+  padding: 16px 22px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  border-top: 1px solid #eef2f7;
+}
+.section-title-modal {
+  font-size: 13px; font-weight: 700; color: #0d2b52;
+  padding: 10px 0 6px; margin: 12px 0 8px;
+  border-bottom: 1px solid #d6e4f0;
+}
+.membre-row { align-items: flex-end; }
+.btn-remove {
+  background: #e74c3c; color: white; border: none;
+  width: 30px; height: 30px; border-radius: 50%;
+  cursor: pointer; font-size: 12px; flex-shrink: 0;
+  margin-bottom: 2px;
+}
+.btn-add-membre {
+  background: #eef5fb; color: #1a5276;
+  border: 1px dashed #1a5276; padding: 7px 16px;
+  border-radius: 6px; font-size: 13px; cursor: pointer;
+  margin-top: 4px; transition: background 0.2s;
+}
+.btn-add-membre:hover { background: #d6e4f0; }
+
+/* ── Impression ──────────────────────────────────────── */
+@media print {
+  .navbar, .btn-submit, .btn-print, .btn-new, .btn-ordre,
+  .alert-success, .alert-error, .modal-overlay { display: none !important; }
+  .page-wrapper { background: white; padding: 0; }
+  .form-card    { box-shadow: none; }
+}
+/*----------------------------*/
+.btn-close-x {
+  background: transparent; border: none;
+  color: white; font-size: 18px; cursor: pointer;
+  opacity: 0.8; transition: opacity 0.2s;
+}
+.btn-close-x:hover { opacity: 1; }
+
+.btn-submit-modal {
+  background: #1a5276; color: white; border: none;
+  padding: 10px 24px; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: background 0.2s;
+}
+.btn-submit-modal:hover:not(:disabled) { background: #2e86c1; }
+.btn-submit-modal:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-cancel {
+  background: white; color: #666;
+  border: 1.5px solid #dde3ec; padding: 10px 20px;
+  border-radius: 8px; font-size: 14px; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-cancel:hover { border-color: #1a5276; color: #1a5276; }
+
+.btn-main {
+  padding: 10px 20px; border-radius: 6px;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.btn-save {
+  background: #1a5276; color: white; border: none;
+}
+.btn-save:hover:not(:disabled) { background: #2e86c1; }
+.btn-mission {
+  background: white; color: #1a5276; border: 2px solid #1a5276;
+}
+.btn-mission:hover:not(:disabled) { background: #eef5fb; }
